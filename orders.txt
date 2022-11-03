@@ -1,0 +1,8 @@
+Customer Name:Gary,Customer Adress:12 Gareth Gavenue,Customer Phone:091804928094201,Order Status:Extra Tasty
+Customer Name:Paul,Customer Adress:10 made up place,Customer Phone:0920314123,Order Status:Going Cold
+Customer Name:Geoff,Customer Adress:The Flipping Sea,Customer Phone:-248-9248-9824-9812-49,Order Status:Burnt AF
+Customer Name:john johnson,Customer Adress:REDACTED,Customer Phone:0121---------,Order Status:Delivered
+Customer Name:Phillip,Customer Adress:Philedelphia,Customer Phone:09809808phil,Order Status:Lost In Transit
+Customer Name:Rodney The Wise,Customer Adress:aaaaarrrrgggghhhhh why BUGGSS,Customer Phone:sefsefsef,Order Status:No Profanity Here
+Customer Name:Another,Customer Adress:cold,Customer Phone:order,Order Status:Preparing
+Customer Name:Order,Customer Adress:Ordersville,Customer Phone:0rd3r,Order Status:Preparing
