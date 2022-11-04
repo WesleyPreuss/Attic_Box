@@ -14,7 +14,7 @@ def message(msg_txt,msg_length):
 def compile_orders():
     order_list = []
     order_compiling = {}
-    with open("mini_project_folder\orders.txt","r") as order_db:
+    with open("Attic_Box\orders.txt","r") as order_db:
         order_string = order_db.read()
         full_list = order_string.splitlines()
         for order in full_list:
@@ -112,20 +112,41 @@ def create_order():
         cx_name = input("Customer Name:")
         cx_adress = input("Customer Adress:")
         cx_phone = input("Customer Phone:")
+        courier = select_courier()
         status = "Preparing"
         new_order_dict = {"Customer Name":cx_name,"Customer Adress":cx_adress,
-        "Customer Phone":cx_phone,"Order Status":status}
+        "Customer Phone":cx_phone,"Courier":courier,"Order Status":status}
         new_order_string = ""
         for key in new_order_dict:
             new_order_string += key +":"+ new_order_dict[key] + "," 
         new_order_string = new_order_string.rstrip(",")
         new_order_string += "\n"
-        with open("mini_project_folder\orders.txt","a+") as orders_db:
+        with open("Attic_Box\orders.txt","a+") as orders_db:
            orders_db.write(new_order_string) 
         message("NEW ORDER CREATED",1.5)
         order_menu()
     except Exception as error_message:
         print("ERROR:",error_message)  
+
+
+def select_courier():
+    while True:
+        os.system("cls")
+        try:
+            title = r"SELECT COURIER""\n``````````````"
+            couriers = open_courier_db()
+            print(title)
+            for courier in couriers:
+                print(couriers.index(courier) + 1,":",courier)
+            user_selection = int(input("Select Courier:"))
+            if user_selection in range(1,len(couriers)+1):
+                return couriers[user_selection-1]
+            else:
+                message("INVALID SELECTION",1.5)
+                continue
+        except Exception as error:
+            message(f"ERROR:\n{error}",4)
+            order_menu()
 
 
 def save_orders(input_list):
@@ -135,7 +156,7 @@ def save_orders(input_list):
             output_string += key + ":" + value + ","
         output_string = output_string.rstrip(",")
         output_string += "\n"
-    with open("mini_project_folder\orders.txt","w") as orders_db:
+    with open("Attic_Box\orders.txt","w") as orders_db:
         orders_db.write(output_string)
 
 
@@ -197,6 +218,9 @@ def edit_orders():
                     category = "Customer Phone"
                     new_info = input("Replace Phone Number With:")
                 elif item_selection == 4:
+                    category = "Courier"
+                    new_info = select_courier()
+                elif item_selection == 5:
                     category = "Order Status"
                     new_info = input("Replace Status With:")
             if new_info == "":
@@ -391,14 +415,14 @@ def courier_menu():
 
 
 def open_courier_db():
-    with open("mini_project_folder\couriers.json","r") as couriers_db:
+    with open("Attic_Box\couriers.json","r") as couriers_db:
         input_data = couriers_db.read()
         output_data = json.loads(input_data)
         return(output_data)
 
 
 def save_courier_db(input):
-    with open("mini_project_folder/couriers.json","w") as courier_db:
+    with open("Attic_Box\couriers.json","w") as courier_db:
         input_data = json.dumps(input)
         courier_db.write(input_data)
 
