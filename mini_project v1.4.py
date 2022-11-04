@@ -4,6 +4,20 @@ import json
 
 product_list = ["Coke","Burger","Fries"]
 
+#comment to try pull reqeust ag
+def fancy_message(msg_txt,msg_length):
+    os.system("cls")
+    input_string = msg_txt
+    output_txt = ""
+    for character in input_string:
+        os.system("cls")
+        output_txt += character
+        print(output_txt)
+        time.sleep(0.1)
+    time.sleep(msg_length)
+    
+
+
 
 def message(msg_txt,msg_length):
     os.system("cls")
@@ -277,7 +291,7 @@ def main_menu():
         try:
             user_selection = int(input("Select Option:"))
             if user_selection == 0:
-                message("GOODBYE",1.5)
+                fancy_message("GOODBYE",1.5)
                 os.system("cls")
                 exit()
             elif user_selection == 1:
@@ -515,4 +529,9 @@ def delete_courier():
                     continue
         except Exception as error:
             message(f"INVALID SELECTION\n{error}",3) 
+
+
+fancy_message("Welcome To The Shop Programme",2)
+
+
 main_menu()
