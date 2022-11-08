@@ -2,7 +2,7 @@ import os
 import time
 import json
 
-product_list = ["Coke","Burger","Fries"]
+
 
 
 def fancy_message(msg_txt,msg_length):
@@ -46,28 +46,62 @@ def print_orders():
                 print("INVALID SELECTION")
 
 
+def open_item_db():
+    with open("Attic_Box\items.json","r") as items_db:
+        input_data = items_db.read()
+        output_data = json.loads(input_data)
+        return(output_data)
+
+
+def save_item_db(input):
+    with open("Attic_Box\items.json","w") as item_db:
+        input_data = json.dumps(input)
+        item_db.write(input_data)
+
+
 def add_new_item():
     while True:
-        os.system("cls")
-        print("Create New\n``````````")
-        print("0:Back")
-        new_product_input = input("Enter New Product:")
-        if new_product_input == "0":
-            product_edit_menu()
-        elif new_product_input == "":
-            message("INPUT BLANK NO ITEM ADDED",1.5)
-            continue
-        else:
-            product_list.append(new_product_input)
-            message(f"New Product Added:{new_product_input}",1.5)
-            product_edit_menu() 
+        try:
+            new_item = {}
+            os.system("cls")
+            print("Create New\n``````````")
+            print("0:Back")
+            new_product_input = input("Enter New Product:")
+            if new_product_input == "0":
+                product_edit_menu()
+            elif new_product_input == "":
+                message("INPUT BLANK NO ITEM ADDED",1.5)
+                continue
+            else:
+                new_price_input = input("Price:")
+                if new_price_input == "0":
+                    product_edit_menu()
+                elif new_price_input == "":
+                    message("INPUT BLANK NO ITEM ADDED",1.5)
+                    continue
+                else:
+                    new_item.update({"Product":new_product_input,"Price":new_price_input})
+                    try:
+                        item_db = open_item_db()
+                        item_db.append(new_item)
+                        save_item_db(item_db)
+                    except:
+                        new_db = []
+                        new_db.append(new_item)
+                        save_item_db(new_db)
+                    
+                    message(f"New Product Added:{new_product_input}: {new_price_input}",1.5)
+                    product_edit_menu() 
+        except Exception as error:
+            message(f"ERROR:{error}",5)
 
 
 def edit_current_item():
     os.system("cls")
     print("Edit Item\n`````````")
+    product_list = open_item_db()
     for product in product_list:
-        print(product_list.index(product)+1,":",product)
+        print(product_list.index(product)+1,":",product.get("Product"))
     print("0:Back") 
     try:
         editable = int(input("Select Product To Edit:"))
@@ -75,9 +109,11 @@ def edit_current_item():
             product_edit_menu()
         else:
             replacement = input("Replace With:")
-            replaced_item = product_list[(editable-1)]
-        product_list[(editable-1)] = replacement
+            new_price = input("Price:")
+            replaced_item = product_list[(editable-1)].get("Product")
+        product_list[(editable-1)].update({"Product":replacement,"Price":new_price})
         message(f"PRODUCT: {replaced_item}\nREPLACED WITH: {replacement}",2)
+        save_item_db(product_list)
         product_edit_menu()
     except Exception as error:
         print(f"INVALID OPTION\n{error}")
@@ -87,17 +123,19 @@ def edit_current_item():
 def delete_item():
     while True:
         os.system("cls")
+        product_list = open_item_db()
         print("Delete\n``````")
         for product in product_list:
-            print(product_list.index(product)+1,":",product)
+            print(product_list.index(product)+1,":",product.get("Product"))
         print("0:Back")
         try:
             deletable_item = int(input("Select Product To Delete:"))
             if deletable_item == 0:
                 product_edit_menu()
             else:
-                deleted_item = product_list[(deletable_item)-1]
+                deleted_item = product_list[(deletable_item)-1].get("Product")
                 product_list.pop(deletable_item - 1)
+                save_item_db(product_list)
                 message(f"PRODUCT:{deleted_item} DELETED",1.5)
                 continue
         except Exception as error:
@@ -316,8 +354,9 @@ def products_list():
     while True:
         os.system("cls")
         print(product_list_title)
+        product_list = open_item_db()
         for product in product_list:
-            print(product_list.index(product) + 1,":",product)
+            print(product_list.index(product) + 1,":",product.get("Product"),"  ",product.get("Price"))
         print("0:Back")
         try:
             user_selection = int(input("Select Option:"))
