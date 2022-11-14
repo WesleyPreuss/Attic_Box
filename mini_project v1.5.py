@@ -1,8 +1,14 @@
 import os
 import time
 import json
+import sys, subprocess
 
-
+def clear_screen():
+    os = sys.platform
+    if os == 'win32':
+        subprocess.run('cls', shell=True)
+    elif os == 'linux' or os == 'darwin':
+        subprocess.run('clear', shell=True)
 
 
 def fancy_message(msg_txt,msg_length):
@@ -36,14 +42,27 @@ def print_orders():
     orders = compile_orders()
     for order in orders:
         print(orders.index(order) + 1,":")
-        for key in order:   
-            print(key,":",order.get(key))
-    while True:
-            user_selection = input("0 To Return:")
-            if user_selection == "0":
-                order_menu()
+        for key in order:
+            if isinstance(order.get(key),dict):
+                for subkey in order.get(key):
+                    print(subkey,": ",orders[orders.index(order)][key][subkey])
+                    continue
+            elif isinstance(order.get(key),list):
+                print(key,":")
+                for item in order.get(key):
+                    print(item.get("Product"),item.get("Price"))
+                    continue
             else:
-                print("INVALID SELECTION")
+                print(key,":",order.get(key))
+                continue
+        print("\n")
+    while True:
+        user_selection = input("0 To Return:")
+        if user_selection == "0":
+            order_menu()
+        else:
+            print("INVALID SELECTION")
+            continue
 
 
 def open_item_db():
@@ -143,6 +162,42 @@ def delete_item():
                 continue
 
 
+def select_items():
+    new_order = []
+    while True:
+        os.system("cls")
+        if new_order == []:
+            pass
+        else:
+            print("\nNEW ORDER\n`````````")
+            for item in new_order:
+                print(item.get("Product"),":",item.get("Price"))
+        item_db = open_item_db()
+        for item in item_db:
+            print(item_db.index(item)+1,": ",item.get("Product"),"/ ",item.get("Price"))
+        print("0:Cancel")
+        print("Type Confirm To Continue")
+        
+        try:
+            user_selection = input("Add An Item:")
+            if user_selection == "0":
+                message("ORDER CANCELLED",1.5)
+                order_menu()
+            elif user_selection.lower() == "confirm":
+                return new_order
+            elif int(user_selection) in range(1,len(item_db)+1):
+                new_entry ={}
+                new_entry.update({"Product":item_db[int(user_selection)-1].get("Product")})
+                new_entry.update({"Price":item_db[int(user_selection)-1].get("Price")})
+                new_order.append(new_entry)
+            else:
+                message("INVALID SELECTION",1.5)
+                continue
+        except Exception as error:
+            message(f"ERROR{error}",3)
+            continue
+
+
 def create_order():
     os.system("cls")
     print(r"CREATE NEW ORDER""\n````````````````")
@@ -151,9 +206,10 @@ def create_order():
         cx_adress = input("Customer Adress:")
         cx_phone = input("Customer Phone:")
         courier = select_courier()
+        new_order = select_items()
         status = "Preparing"
         new_order_dict = {"Customer Name":cx_name,"Customer Adress":cx_adress,
-        "Customer Phone":cx_phone,"Courier":courier,"Order Status":status}
+        "Customer Phone":cx_phone,"Courier":courier,"Order":new_order,"Order Status":status}
         order_db = compile_orders()
         order_db.append(new_order_dict)
         save_orders(order_db)
@@ -176,7 +232,7 @@ def select_courier():
             couriers = open_courier_db()
             print(title)
             for courier in couriers:
-                print(couriers.index(courier) + 1,":",courier)
+                print(couriers.index(courier) + 1,":",courier.get("Name"),": ",courier.get("Number"))
             user_selection = int(input("Select Courier:"))
             if user_selection in range(1,len(couriers)+1):
                 return couriers[user_selection-1]
@@ -201,7 +257,21 @@ def update_order_status():
         print(update_order_status_title)
         orders = compile_orders()
         for order in orders:
-            print(orders.index(order) + 1,":",order)
+            print(orders.index(order) + 1,":")
+            for key in order:
+                if isinstance(order.get(key),dict):
+                    for subkey in order.get(key):
+                        print(subkey,": ",orders[orders.index(order)][key][subkey])
+                        continue
+                elif isinstance(order.get(key),list):
+                    print(key,":")
+                    for item in order.get(key):
+                        print(item.get("Product"),item.get("Price"))
+                        continue
+                else:
+                    print(key,":",order.get(key))
+                    continue
+            print("\n")
         print("0:Back")
         try:
             user_selection = int(input("Select Order:"))
@@ -209,7 +279,6 @@ def update_order_status():
                 order_menu()
             else:
                 order = orders[user_selection - 1]              
-                print(order)
                 new_status = input("Enter New Status:")
                 order.update({"Order Status":new_status})
                 save_orders(orders)
@@ -225,8 +294,21 @@ def edit_orders():
         os.system("cls")
         orders = compile_orders()
         for order in orders:
-                print(orders.index(order)+1,":",order)
-        print("0:Back")
+            print(orders.index(order) + 1,":")
+            for key in order:
+                if isinstance(order.get(key),dict):
+                    for subkey in order.get(key):
+                        print(subkey,": ",orders[orders.index(order)][key][subkey])
+                        continue
+                elif isinstance(order.get(key),list):
+                    print(key,":")
+                    for item in order.get(key):
+                        print(item.get("Product"),item.get("Price"))
+                        continue
+                else:
+                    print(key,":",order.get(key))
+                    continue
+            print("\n")
         try:
             user_selection = int(input("Select Order:"))
             index = 1
@@ -255,6 +337,9 @@ def edit_orders():
                     category = "Courier"
                     new_info = select_courier()
                 elif item_selection == 5:
+                    category = "Order"
+                    new_info = select_items()
+                elif item_selection == 5:
                     category = "Order Status"
                     new_info = input("Replace Status With:")
             if new_info == "":
@@ -276,7 +361,21 @@ def delete_orders():
         os.system("cls")
         orders = compile_orders()
         for order in orders:
-                print(orders.index(order)+1,":",order)
+            print(orders.index(order) + 1,":")
+            for key in order:
+                if isinstance(order.get(key),dict):
+                    for subkey in order.get(key):
+                        print(subkey,": ",orders[orders.index(order)][key][subkey])
+                        continue
+                elif isinstance(order.get(key),list):
+                    print(key,":")
+                    for item in order.get(key):
+                        print(item.get("Product"),item.get("Price"))
+                        continue
+                else:
+                    print(key,":",order.get(key))
+                    continue
+            print("\n")
         print("0:Back")
         try:
             user_selection = int(input("Select Order To Delete:"))
@@ -399,7 +498,7 @@ def order_menu():
     order_menu_list = ["Show Orders","Create Order","Edit Order Status","Edit Order","Delete Order"]
     order_menu_title = "ORDERS MENU\n```````````"
     while True:
-        os.system("cls")
+        clear_screen()
         print(order_menu_title)
         for option in order_menu_list:
             print(order_menu_list.index(option) + 1,":",option)
@@ -470,7 +569,7 @@ def print_couriers():
             os.system("cls")
             print(title)
             for courier in couriers:
-                print(couriers.index(courier) + 1,":",courier)
+                print(couriers.index(courier) + 1,":",courier.get("Name"),"/ ",courier.get("Number"))
             print("0:Back")
             user_selection = input("Select Option:")
             if user_selection == "0":
@@ -486,12 +585,16 @@ def create_courier():
     os.system("cls")
     print(title)
     new_courier = input("New Courier Name:")
+    new_courier_number = input("Courier Number:")
     if new_courier == "":
         message("NO CHANGES MADE",1.5)
         courier_menu()
     else:
+        new_entry = {}
+        new_entry.update({"Name":new_courier})
+        new_entry.update({"Number":new_courier_number})
         couriers = open_courier_db()
-        couriers.append(new_courier)
+        couriers.append(new_entry)
         save_courier_db(couriers)
 
 
@@ -502,22 +605,34 @@ def update_courier():
         os.system("cls")
         print(title)
         for courier in couriers:
-            print(couriers.index(courier) + 1,":",courier)
+            print(couriers.index(courier) + 1,":",courier.get("Name"),"/ ",courier.get("Number"))
         print("0:Back")
         try:
             user_selection = int(input("Select Courier:"))
             if user_selection == 0:
                 courier_menu()
             else:
-                print(couriers[user_selection-1]," << Selected")
-                new_info = input("Change To: ")
-                if new_info == "":
+                print(couriers[user_selection-1].get("Name")," << Selected")
+                new_name = input("New Name: ")
+                if new_name == "":
                     message("NO CHANGES MADE",1)
                     continue
                 else:
-                    couriers[user_selection-1] = new_info
+                    while True:
+                        change_num = input("Would You Like To Change Number Aswell?? y/n:")
+                        if change_num.lower() == "n":
+                            new_number = couriers[user_selection-1].get("Number")
+                            break 
+                        elif change_num.lower() == "y":
+                            new_number = input("New Number: ")
+                            break
+                        else:
+                            message("INVALID SELECTION",1)
+                            continue
+                    couriers[user_selection-1]["Name"] = new_name
+                    couriers[user_selection-1]["Number"] = new_number
                     save_courier_db(couriers)
-                    message(r"UPDATED TO: "+new_info,2)
+                    message(r"UPDATED TO: "+f"{new_name}:{new_number}",2)
                     continue
         except Exception as error:
             message(f"INVALID SELECTION\n{error}",3) 
