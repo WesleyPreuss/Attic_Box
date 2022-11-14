@@ -12,11 +12,11 @@ def clear_screen():
 
 
 def fancy_message(msg_txt,msg_length):
-    os.system("cls")
+    clear_screen()
     input_string = msg_txt
     output_txt = ""
     for character in input_string:
-        os.system("cls")
+        clear_screen()
         output_txt += character
         print(output_txt)
         time.sleep(0.1)
@@ -24,7 +24,7 @@ def fancy_message(msg_txt,msg_length):
     
 
 def message(msg_txt,msg_length):
-    os.system("cls")
+    clear_screen()
     print(msg_txt)
     time.sleep(msg_length)
 
@@ -37,7 +37,7 @@ def compile_orders():
 
 
 def print_orders():
-    os.system("cls")
+    clear_screen()
     print("ORDERS LOG\n``````````")
     orders = compile_orders()
     for order in orders:
@@ -82,7 +82,7 @@ def add_new_item():
     while True:
         try:
             new_item = {}
-            os.system("cls")
+            clear_screen()
             print("Create New\n``````````")
             print("0:Back")
             new_product_input = input("Enter New Product:")
@@ -116,7 +116,7 @@ def add_new_item():
 
 
 def edit_current_item():
-    os.system("cls")
+    clear_screen()
     print("Edit Item\n`````````")
     product_list = open_item_db()
     for product in product_list:
@@ -141,7 +141,7 @@ def edit_current_item():
 
 def delete_item():
     while True:
-        os.system("cls")
+        clear_screen()
         product_list = open_item_db()
         print("Delete\n``````")
         for product in product_list:
@@ -165,7 +165,7 @@ def delete_item():
 def select_items():
     new_order = []
     while True:
-        os.system("cls")
+        clear_screen()
         if new_order == []:
             pass
         else:
@@ -199,7 +199,7 @@ def select_items():
 
 
 def create_order():
-    os.system("cls")
+    clear_screen()
     print(r"CREATE NEW ORDER""\n````````````````")
     try:
         cx_name = input("Customer Name:")
@@ -226,7 +226,7 @@ def create_order():
 
 def select_courier():
     while True:
-        os.system("cls")
+        clear_screen()
         try:
             title = r"SELECT COURIER""\n``````````````"
             couriers = open_courier_db()
@@ -252,7 +252,7 @@ def save_orders(input):
 
 def update_order_status():
     update_order_status_title = r"UPDATE ORDER STATUS""\n```````````````````"
-    os.system("cls")
+    clear_screen()
     while True:
         print(update_order_status_title)
         orders = compile_orders()
@@ -291,7 +291,7 @@ def update_order_status():
 
 def edit_orders():
     while True:
-        os.system("cls")
+        clear_screen()
         orders = compile_orders()
         for order in orders:
             print(orders.index(order) + 1,":")
@@ -315,7 +315,7 @@ def edit_orders():
             if user_selection == 0:
                 order_menu()
             else:
-                os.system("cls")
+                clear_screen()
                 order = orders[user_selection-1]
                 for item in order :
                     print(index,":",item,":",order.get(item))
@@ -526,7 +526,7 @@ def courier_menu():
     courier_menu_list = ["Show Couriers","Create New Courier","Edit Couriers","Delete Couriers"]
     courier_menu_title = "COURIER MENU\n````````````"
     while True:
-        os.system("cls")
+        clear_screen()
         print(courier_menu_title)
         for option in courier_menu_list:
             print(courier_menu_list.index(option) + 1,":",option)
@@ -566,7 +566,7 @@ def print_couriers():
         title = "COURIERS\n````````"
         couriers = open_courier_db()
         while True:
-            os.system("cls")
+            clear_screen()
             print(title)
             for courier in couriers:
                 print(couriers.index(courier) + 1,":",courier.get("Name"),"/ ",courier.get("Number"))
@@ -582,7 +582,7 @@ def print_couriers():
 
 def create_courier():
     title = r"CREATE NEW COURIER""\n""``````````````````"
-    os.system("cls")
+    clear_screen()
     print(title)
     new_courier = input("New Courier Name:")
     new_courier_number = input("Courier Number:")
@@ -602,7 +602,7 @@ def update_courier():
     title = r"EDIT COURIER""\n""````````````"
     while True:
         couriers = open_courier_db()
-        os.system("cls")
+        clear_screen()
         print(title)
         for courier in couriers:
             print(couriers.index(courier) + 1,":",courier.get("Name"),"/ ",courier.get("Number"))
@@ -642,7 +642,7 @@ def delete_courier():
     title = r"DELETE COURIER""\n""``````````````"
     while True:
         couriers = open_courier_db()
-        os.system("cls")
+        clear_screen()
         print(title)
         for courier in couriers:
             print(couriers.index(courier) + 1,":",courier)
