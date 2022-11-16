@@ -232,7 +232,7 @@ def select_courier():
             couriers = open_courier_db()
             print(title)
             for courier in couriers:
-                print(couriers.index(courier) + 1,":",courier.get("Name"),": ",courier.get("Number"))
+                print(couriers.index(courier) + 1,":",courier.get("Courier Name"),": ",courier.get("Courier Number"))
             user_selection = int(input("Select Courier:"))
             if user_selection in range(1,len(couriers)+1):
                 return couriers[user_selection-1]
@@ -287,7 +287,7 @@ def update_order_status():
         except Exception as error:
             print("INVALID SELECTION):",error)
             continue
-    
+
 
 def edit_orders():
     while True:
@@ -569,7 +569,7 @@ def print_couriers():
             clear_screen()
             print(title)
             for courier in couriers:
-                print(couriers.index(courier) + 1,":",courier.get("Name"),"/ ",courier.get("Number"))
+                print(couriers.index(courier) + 1,":",courier.get("Courier Name"),"/ ",courier.get("Courier Number"))
             print("0:Back")
             user_selection = input("Select Option:")
             if user_selection == "0":
@@ -591,8 +591,8 @@ def create_courier():
         courier_menu()
     else:
         new_entry = {}
-        new_entry.update({"Name":new_courier})
-        new_entry.update({"Number":new_courier_number})
+        new_entry.update({"Courier Name":new_courier})
+        new_entry.update({"Courier Number":new_courier_number})
         couriers = open_courier_db()
         couriers.append(new_entry)
         save_courier_db(couriers)
@@ -605,14 +605,14 @@ def update_courier():
         clear_screen()
         print(title)
         for courier in couriers:
-            print(couriers.index(courier) + 1,":",courier.get("Name"),"/ ",courier.get("Number"))
+            print(couriers.index(courier) + 1,":",courier.get("Courier Name"),"/ ",courier.get("Courier Number"))
         print("0:Back")
         try:
             user_selection = int(input("Select Courier:"))
             if user_selection == 0:
                 courier_menu()
             else:
-                print(couriers[user_selection-1].get("Name")," << Selected")
+                print(couriers[user_selection-1].get("Courier Name")," << Selected")
                 new_name = input("New Name: ")
                 if new_name == "":
                     message("NO CHANGES MADE",1)
@@ -621,7 +621,7 @@ def update_courier():
                     while True:
                         change_num = input("Would You Like To Change Number Aswell?? y/n:")
                         if change_num.lower() == "n":
-                            new_number = couriers[user_selection-1].get("Number")
+                            new_number = couriers[user_selection-1].get("Courier Number")
                             break 
                         elif change_num.lower() == "y":
                             new_number = input("New Number: ")
@@ -629,8 +629,8 @@ def update_courier():
                         else:
                             message("INVALID SELECTION",1)
                             continue
-                    couriers[user_selection-1]["Name"] = new_name
-                    couriers[user_selection-1]["Number"] = new_number
+                    couriers[user_selection-1]["Courier Name"] = new_name
+                    couriers[user_selection-1]["Courier Number"] = new_number
                     save_courier_db(couriers)
                     message(r"UPDATED TO: "+f"{new_name}:{new_number}",2)
                     continue
