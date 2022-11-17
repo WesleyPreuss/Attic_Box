@@ -94,12 +94,19 @@ def add_new_item():
                 message("INPUT BLANK NO ITEM ADDED",1.5)
                 continue
             else:
-                new_price_input = input("Price:")
-                if new_price_input == "0":
+                while True:
+                    try:
+                        new_price_input = float(input("Price:"))
+                        if new_price_input < 0:
+                            print("Please Enter A Positive Numerical Value")
+                            continue
+                        else:
+                            break
+                    except:
+                        print("Please Enter A Numerical Value")
+                        continue
+                if new_price_input == 0:
                     product_edit_menu()
-                elif new_price_input == "":
-                    message("INPUT BLANK NO ITEM ADDED",1.5)
-                    continue
                 else:
                     new_item.update({"Product":new_product_input,"Price":new_price_input})
                     try:
@@ -122,7 +129,7 @@ def edit_current_item():
     print("Edit Item\n`````````")
     product_list = open_item_db()
     for product in product_list:
-        print(product_list.index(product)+1,":",product.get("Product"))
+        print(product_list.index(product)+1,":",product.get("Product")," / ",product.get("Price"))
     print("0:Back") 
     try:
         editable = int(input("Select Product To Edit:"))
@@ -130,9 +137,19 @@ def edit_current_item():
             product_edit_menu()
         else:
             replacement = input("Replace With:")
-            new_price = input("Price:")
+            while True:
+                    try:
+                        new_price_input = float(input("Price:"))
+                        if new_price_input < 0:
+                            print("Please Enter A Positive Numerical Value")
+                            continue
+                        else:
+                            break
+                    except:
+                        print("Please Enter A Numerical Value")
+                        continue
             replaced_item = product_list[(editable-1)].get("Product")
-        product_list[(editable-1)].update({"Product":replacement,"Price":new_price})
+        product_list[(editable-1)].update({"Product":replacement,"Price":new_price_input})
         message(f"PRODUCT: {replaced_item}\nREPLACED WITH: {replacement}",2)
         save_item_db(product_list)
         product_edit_menu()
