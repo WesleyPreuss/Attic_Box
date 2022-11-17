@@ -3,6 +3,7 @@ import time
 import json
 import sys, subprocess
 
+# a function to check the user OS and implement correct command to clear terminal
 def clear_screen():
     os = sys.platform
     if os == 'win32':
@@ -10,7 +11,8 @@ def clear_screen():
     elif os == 'linux' or os == 'darwin':
         subprocess.run('clear', shell=True)
 
-
+# This function prints a fancy message (looks like the output is being typed) 
+# args: msg_txt = input txt msg_length is the amount of time displayed on screen and not the length of chars
 def fancy_message(msg_txt,msg_length):
     clear_screen()
     input_string = msg_txt
@@ -21,21 +23,21 @@ def fancy_message(msg_txt,msg_length):
         print(output_txt)
         time.sleep(0.1)
     time.sleep(msg_length)
-    
-
+#This function clears the terminal and displays a message
+# args: msg_txt = input txt msg_length is the amount of time displayed on screen and not the length of chars
 def message(msg_txt,msg_length):
     clear_screen()
     print(msg_txt)
     time.sleep(msg_length)
 
-
+#This function loads the orders JSON and returns the contents
 def compile_orders():
     with open("Attic_Box\orders.json","r") as orders_db:
         input_data = orders_db.read()
         output_data = json.loads(input_data)
         return(output_data)
 
-
+#Iterates through the data and prints it in a more appealing format 
 def print_orders():
     clear_screen()
     print("ORDERS LOG\n``````````")
@@ -64,20 +66,20 @@ def print_orders():
             print("INVALID SELECTION")
             continue
 
-
+#This function loads the items JSON and returns the contents
 def open_item_db():
     with open("Attic_Box\items.json","r") as items_db:
         input_data = items_db.read()
         output_data = json.loads(input_data)
         return(output_data)
 
-
+#This function takes an input and saves it to the items JSON the arg is the input data
 def save_item_db(input):
     with open("Attic_Box\items.json","w") as item_db:
         input_data = json.dumps(input)
         item_db.write(input_data)
 
-
+#Takes input from user and creates a new item for the item DB
 def add_new_item():
     while True:
         try:
@@ -114,7 +116,7 @@ def add_new_item():
         except Exception as error:
             message(f"ERROR:{error}",5)
 
-
+#Prints item DB and takes user selection and overwrites the item DB
 def edit_current_item():
     clear_screen()
     print("Edit Item\n`````````")
@@ -138,7 +140,7 @@ def edit_current_item():
         print(f"INVALID OPTION\n{error}")
         product_edit_menu()
 
-
+#Prints item DB,takes user selection for deletion and confirms before removing the item and overwriting the DB
 def delete_item():
     while True:
         clear_screen()
@@ -172,6 +174,7 @@ def select_items():
             print("\nNEW ORDER\n`````````")
             for item in new_order:
                 print(item.get("Product"),":",item.get("Price"))
+            print("`````````\n\n")
         item_db = open_item_db()
         for item in item_db:
             print(item_db.index(item)+1,": ",item.get("Product"),"/ ",item.get("Price"))
