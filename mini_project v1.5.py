@@ -32,7 +32,7 @@ def message(msg_txt,msg_length):
 
 #This function loads the orders JSON and returns the contents
 def compile_orders():
-    with open("Attic_Box\orders.json","r") as orders_db:
+    with open("orders.json","r") as orders_db:
         input_data = orders_db.read()
         output_data = json.loads(input_data)
         return(output_data)
@@ -68,14 +68,14 @@ def print_orders():
 
 #This function loads the items JSON and returns the contents
 def open_item_db():
-    with open("Attic_Box\items.json","r") as items_db:
+    with open("items.json","r") as items_db:
         input_data = items_db.read()
         output_data = json.loads(input_data)
         return(output_data)
 
 #This function takes an input and saves it to the items JSON the arg is the input data
 def save_item_db(input):
-    with open("Attic_Box\items.json","w") as item_db:
+    with open("items.json","w") as item_db:
         input_data = json.dumps(input)
         item_db.write(input_data)
 
@@ -265,7 +265,7 @@ def select_courier():
 
 
 def save_orders(input):
-        with open("Attic_Box\orders.json","w") as orders_db:
+        with open("orders.json","w") as orders_db:
             input_data = json.dumps(input)
             orders_db.write(input_data)
 
@@ -569,14 +569,14 @@ def courier_menu():
 
 
 def open_courier_db():
-    with open("Attic_Box\couriers.json","r") as couriers_db:
+    with open("couriers.json","r") as couriers_db:
         input_data = couriers_db.read()
         output_data = json.loads(input_data)
         return(output_data)
 
 
 def save_courier_db(input):
-    with open("Attic_Box\couriers.json","w") as courier_db:
+    with open("couriers.json","w") as courier_db:
         input_data = json.dumps(input)
         courier_db.write(input_data)
 
