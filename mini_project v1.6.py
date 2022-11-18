@@ -3,14 +3,13 @@ import time
 import json
 import sys, subprocess
 
-# a function to check the user OS and implement correct command to clear terminal
+# a function to check the user OS then implements correct command to clear terminal
 def clear_screen():
     os = sys.platform
     if os == 'win32':
         subprocess.run('cls', shell=True)
     elif os == 'linux' or os == 'darwin':
         subprocess.run('clear', shell=True)
-
 # This function prints a fancy message (looks like the output is being typed) 
 # args: msg_txt = input txt msg_length is the amount of time displayed on screen and not the length of chars
 def fancy_message(msg_txt,msg_length):
@@ -180,8 +179,8 @@ def delete_item():
         except Exception as error:
                 message(f"INVALID OPTION\n{error}",2)
                 continue
-
-
+#Prints items and takes user selection displaying selection made and total
+#outputs a tuple (list[dict{"Product":product-name,"Price":price}],total)
 def select_items():
     new_order = []
     while True:
@@ -222,7 +221,7 @@ def select_items():
             message(f"ERROR{error}",3)
             continue
 
-
+#takes user input and creates a new order then saves to DB
 def create_order():
     while True:
         clear_screen()
@@ -249,7 +248,7 @@ def create_order():
         except Exception as error_message:
             message(f"ERROR:{error_message}",5)  
 
-
+#prints courier DB and asks for user selection then outputs selection
 def select_courier():
     while True:
         clear_screen()
@@ -269,13 +268,14 @@ def select_courier():
             message(f"ERROR:\n{error}",4)
             break
 
-
+#takes input as an argument then overwrites DB with input
 def save_orders(input):
         with open("orders.json","w") as orders_db:
             input_data = json.dumps(input)
             orders_db.write(input_data)
 
-
+#prints orders and asks for user selection to select order and user input for new status
+#then overwrites db with new status
 def update_order_status():
     update_order_status_title = r"UPDATE ORDER STATUS""\n```````````````````"
     clear_screen()
@@ -313,8 +313,8 @@ def update_order_status():
         except Exception as error:
             print("INVALID SELECTION):",error)
             continue
-
-
+#prints orders and takes user selection for orders then takes selection for item to edit
+#then updates the order and saves to db
 def edit_orders():
     while True:
         clear_screen()
@@ -381,7 +381,7 @@ def edit_orders():
                 time.sleep(1)
                 continue
 
-
+#prints orders takes user selection then asks for confirmation before deleting and saving to db
 def delete_orders():
     while True:
         os.system("cls")
@@ -423,7 +423,7 @@ def delete_orders():
                 time.sleep(1)
                 continue
 
-
+#MAIN MENU
 def main_menu():
     main_menu_title ="MAIN MENU\n`````````"
     main_menu_list = ["Products","Orders","Couriers"]
@@ -451,7 +451,7 @@ def main_menu():
             message(f"INVALID SELECTION{error}",1.5)
             continue
 
-
+#PRODUCT MENU
 def product_menu():
     product_menu_title = "PRODUCT MENU\n````````````"
     product_menu_list = ["Show Products","Edit Products"]
@@ -473,7 +473,7 @@ def product_menu():
             message(f"INVALID SELECTION\n{error}",1.5)
             continue
 
-
+#prints products from db and takes user input for back
 def products_list():
     product_list_title = "PRODUCT LIST\n````````````"
     while True:
@@ -493,7 +493,7 @@ def products_list():
             message(f"INVALID SELECTION\n{error}",1.5)
             continue
 
-
+#PRODUCT EDIT MENU
 def product_edit_menu():
     edit_menu_greeting = "EDIT MENU\n`````````"
     edit_menu_list = ["Create New","Edit","Delete"]
@@ -519,7 +519,7 @@ def product_edit_menu():
             message(f"INVALID SELECTION\n{error}",1.5)
             continue
 
-
+#ORDER MENU
 def order_menu():
     order_menu_list = ["Show Orders","Create Order","Edit Order Status","Edit Order","Delete Order"]
     order_menu_title = "ORDERS MENU\n```````````"
@@ -547,7 +547,7 @@ def order_menu():
             message(f"INVALID SELECTION{error}",1.5)
             continue
 
-
+#COURIER MENU
 def courier_menu():
     courier_menu_list = ["Show Couriers","Create New Courier","Edit Couriers","Delete Couriers"]
     courier_menu_title = "COURIER MENU\n````````````"
@@ -573,20 +573,20 @@ def courier_menu():
             message(f"INVALID SELECTION{error}",3)
             continue
 
-
+#Loads courier db and outputs contents
 def open_courier_db():
     with open("couriers.json","r") as couriers_db:
         input_data = couriers_db.read()
         output_data = json.loads(input_data)
         return(output_data)
 
-
+#Takes input as an argument and overwrites db with input
 def save_courier_db(input):
     with open("couriers.json","w") as courier_db:
         input_data = json.dumps(input)
         courier_db.write(input_data)
 
-
+#Prints couriers and takes user selection to go back
 def print_couriers():
     try:
         title = "COURIERS\n````````"
@@ -605,7 +605,7 @@ def print_couriers():
     except Exception as error:
         message("ERROR:\n"+error,4)
 
-
+#takes user input and saves data to courier db creating a new courier
 def create_courier():
     while True:
         title = r"CREATE NEW COURIER""\n""``````````````````"
@@ -625,7 +625,7 @@ def create_courier():
             save_courier_db(couriers)
             break
 
-
+#prints courier and takes user selection and input then overwrites the db with new entry
 def update_courier():
     title = r"EDIT COURIER""\n""````````````"
     while True:
@@ -664,8 +664,8 @@ def update_courier():
                     continue
         except Exception as error:
             message(f"INVALID SELECTION\n{error}",3) 
-
-        
+#prints courier from db then asks for user selection and confirmation 
+#before deleting the courier form the db       
 def delete_courier():
     title = r"DELETE COURIER""\n""``````````````"
     while True:
@@ -694,8 +694,8 @@ def delete_courier():
         except Exception as error:
             message(f"INVALID SELECTION\n{error}",3) 
 
-
+#GREETING
 fancy_message("Welcome To The Shop Programme",1)
 
-
+#Start of program
 main_menu()
