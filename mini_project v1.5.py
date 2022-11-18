@@ -189,12 +189,16 @@ def select_items():
             pass
         else:
             print("\nNEW ORDER\n`````````")
+            total = float(0)
             for item in new_order:
-                print(item.get("Product"),":",item.get("Price"))
+                print(item.get("Product"),": £","{:.2f}".format(item.get("Price")))
+                total += item.get("Price")
+            print("`````````")
+            print(f"Total: £","{:.2f}".format(total))
             print("`````````\n\n")
         item_db = open_item_db()
         for item in item_db:
-            print(item_db.index(item)+1,": ",item.get("Product"),"/ ",item.get("Price"))
+            print(item_db.index(item)+1,": ",item.get("Product"),"  £","{:.2f}".format(item.get("Price")))
         print("0:Cancel")
         print("Type Confirm To Continue")
         
@@ -204,7 +208,7 @@ def select_items():
                 message("ORDER CANCELLED",1.5)
                 order_menu()
             elif user_selection.lower() == "confirm":
-                return new_order
+                return new_order,total
             elif int(user_selection) in range(1,len(item_db)+1):
                 new_entry ={}
                 new_entry.update({"Product":item_db[int(user_selection)-1].get("Product")})
@@ -229,7 +233,7 @@ def create_order():
         new_order = select_items()
         status = "Preparing"
         new_order_dict = {"Customer Name":cx_name,"Customer Adress":cx_adress,
-        "Customer Phone":cx_phone,"Courier":courier,"Order":new_order,"Order Status":status}
+        "Customer Phone":cx_phone,"Courier":courier,"Order":new_order[0],"Order Total":new_order[1],"Order Status":status}
         order_db = compile_orders()
         order_db.append(new_order_dict)
         save_orders(order_db)
@@ -475,7 +479,7 @@ def products_list():
         print(product_list_title)
         product_list = open_item_db()
         for product in product_list:
-            print(product_list.index(product) + 1,":",product.get("Product"),"  ",product.get("Price"))
+            print(product_list.index(product) + 1,":",product.get("Product"),"  £","{:.2f}".format(product.get("Price")))
         print("0:Back")
         try:
             user_selection = int(input("Select Option:"))
