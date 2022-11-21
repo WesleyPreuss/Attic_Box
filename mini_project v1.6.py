@@ -51,7 +51,7 @@ def print_orders():
             elif isinstance(order.get(key),list):
                 print(key,":")
                 for item in order.get(key):
-                    print(item.get("Product"),item.get("Price"))
+                    print(item.get("Product"),"£","{:.2f}".format(item.get("Price")))
                     continue
             else:
                 print(key,":",order.get(key))
@@ -364,7 +364,9 @@ def edit_orders():
                     new_info = select_courier()
                 elif item_selection == 5:
                     category = "Order"
-                    new_info = select_items()
+                    order_tup = select_items()
+                    new_info = order_tup[0]
+                    order["Order Total"] = order_tup[1]
                 elif item_selection == 5:
                     category = "Order Status"
                     new_info = input("Replace Status With:")
