@@ -17,6 +17,10 @@ def print_orders():
     clear_screen()
     print("ORDERS LOG\n``````````")
     orders = compile_orders()
+    if orders == []:
+        print("[NO ORDERS]")
+    else:
+        pass
     for order in orders:
         print(orders.index(order) + 1,":")
         for key in order:
@@ -171,12 +175,12 @@ def edit_orders():
                 elif item_selection == 4:
                     category = "Courier"
                     new_info = select_courier()
-                elif item_selection == 5:
+                elif item_selection == 5 or item_selection == 6:
                     category = "Order"
                     order_tup = select_items()
                     new_info = order_tup[0]
                     order["Order Total"] = order_tup[1]
-                elif item_selection == 5:
+                elif item_selection == 7:
                     category = "Order Status"
                     new_info = input("Replace Status With:")
             if new_info == "":
