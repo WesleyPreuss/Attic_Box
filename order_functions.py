@@ -182,7 +182,7 @@ def edit_orders():
                     order["Order Total"] = order_tup[1]
                 elif item_selection == 7:
                     category = "Order Status"
-                    new_info = input("Replace Status With:")
+                    new_info = delivery_status()
             if new_info == "":
                 message("NOTHING ENTERED NO CHANGES MADE",1.5)
                 continue
@@ -228,11 +228,31 @@ def update_order_status():
                 break
             else:
                 order = orders[user_selection - 1]              
-                new_status = input("Enter New Status:")
+                new_status = delivery_status()
                 order.update({"Order Status":new_status})
                 save_orders(orders)
                 message("STATUS UPDATED",1.5)
                 break
         except Exception as error:
             print("INVALID SELECTION):",error)
+            continue
+
+
+def delivery_status():
+    while True:
+        clear_screen()
+        statuses = ["Preparing","Out For Delivery","Delivered"]
+        for status in statuses:
+            print(statuses.index(status)+1,":",status)
+        try:
+            user_input = int(input("Choose Status:"))
+            if user_input in range(1,len(statuses)+1):
+                status = statuses[user_input-1]
+                return status
+            
+            else:
+                print("INVALID SELECTION")
+                continue
+        except:
+            print("INVALID SELECTION")
             continue
