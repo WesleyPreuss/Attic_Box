@@ -17,6 +17,10 @@ def print_orders():
     clear_screen()
     print("ORDERS LOG\n``````````")
     orders = compile_orders()
+    if orders == []:
+        print("[NO ORDERS]")
+    else:
+        pass
     for order in orders:
         print(orders.index(order) + 1,":")
         for key in order:
@@ -171,14 +175,14 @@ def edit_orders():
                 elif item_selection == 4:
                     category = "Courier"
                     new_info = select_courier()
-                elif item_selection == 5:
+                elif item_selection == 5 or item_selection == 6:
                     category = "Order"
                     order_tup = select_items()
                     new_info = order_tup[0]
                     order["Order Total"] = order_tup[1]
-                elif item_selection == 5:
+                elif item_selection == 7:
                     category = "Order Status"
-                    new_info = input("Replace Status With:")
+                    new_info = delivery_status()
             if new_info == "":
                 message("NOTHING ENTERED NO CHANGES MADE",1.5)
                 continue
@@ -224,11 +228,31 @@ def update_order_status():
                 break
             else:
                 order = orders[user_selection - 1]              
-                new_status = input("Enter New Status:")
+                new_status = delivery_status()
                 order.update({"Order Status":new_status})
                 save_orders(orders)
                 message("STATUS UPDATED",1.5)
                 break
         except Exception as error:
             print("INVALID SELECTION):",error)
+            continue
+
+
+def delivery_status():
+    while True:
+        clear_screen()
+        statuses = ["Preparing","Out For Delivery","Delivered"]
+        for status in statuses:
+            print(statuses.index(status)+1,":",status)
+        try:
+            user_input = int(input("Choose Status:"))
+            if user_input in range(1,len(statuses)+1):
+                status = statuses[user_input-1]
+                return status
+            
+            else:
+                print("INVALID SELECTION")
+                continue
+        except:
+            print("INVALID SELECTION")
             continue

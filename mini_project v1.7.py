@@ -149,7 +149,7 @@ def courier_menu():
 
 #GREETING
 #--------
-fancy_message("Welcome To The Shop Programme",1)
+fancy_message("Shop Programme",1)
 
 #START OF PROGRAMME
 #------------------
