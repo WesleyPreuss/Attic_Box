@@ -21,6 +21,7 @@ How did you guarantee the project's requirements?
 Performed regular manual testing to ensure that functionality was maintained and prevent regression
 Handled errors to ensure application functionality
 
+
 If you had more time, what is one thing you would improve upon?
 spec specified CSV but i implemented JSON
 Implement automated unit tests
