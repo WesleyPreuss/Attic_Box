@@ -15,7 +15,7 @@ jobs:
         with:
           python-version: '3.9'
           cache: 'pip' # caching pip dependencies
-      - run: pip install pygount
+      - run: pip install -r requirements.txt
   list-repo-files:
     name: List files in repository
     runs-on: ubuntu-latest
