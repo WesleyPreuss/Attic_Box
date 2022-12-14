@@ -17,11 +17,11 @@ jobs:
           python-version: '3.9'
           cache: 'pip' # caching pip dependencies
       - run: pip install pygount
-    list-repo-files:
-      name: List files in repository
-      runs-on: ubuntu-latest
-      steps:
-        - name: checkout-repo
-          uses: actions/checkout@v2
-        - name: list-dir
-          run: ls -laR # Recursively list directory contents
+  list-repo-files:
+    name: List files in repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout-repo
+        uses: actions/checkout@v2
+      - name: list-dir
+        run: ls -laR # Recursively list directory contents
