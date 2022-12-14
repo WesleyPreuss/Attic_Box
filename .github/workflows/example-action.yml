@@ -1,5 +1,3 @@
-
-
 name: list-repo
 
 on:
@@ -10,6 +8,7 @@ on:
 jobs:
   install_requirements:
     name : Installs Reqs
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
