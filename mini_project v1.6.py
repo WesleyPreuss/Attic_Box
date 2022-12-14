@@ -3,14 +3,13 @@ import time
 import json
 import sys, subprocess
 
-# a function to check the user OS and implement correct command to clear terminal
+# a function to check the user OS then implements correct command to clear terminal
 def clear_screen():
     os = sys.platform
     if os == 'win32':
         subprocess.run('cls', shell=True)
     elif os == 'linux' or os == 'darwin':
         subprocess.run('clear', shell=True)
-
 # This function prints a fancy message (looks like the output is being typed) 
 # args: msg_txt = input txt msg_length is the amount of time displayed on screen and not the length of chars
 def fancy_message(msg_txt,msg_length):
@@ -52,7 +51,7 @@ def print_orders():
             elif isinstance(order.get(key),list):
                 print(key,":")
                 for item in order.get(key):
-                    print(item.get("Product"),item.get("Price"))
+                    print(item.get("Product"),"£","{:.2f}".format(item.get("Price")))
                     continue
             else:
                 print(key,":",order.get(key))
@@ -61,7 +60,7 @@ def print_orders():
     while True:
         user_selection = input("0 To Return:")
         if user_selection == "0":
-            order_menu()
+            break
         else:
             print("INVALID SELECTION")
             continue
@@ -89,7 +88,7 @@ def add_new_item():
             print("0:Back")
             new_product_input = input("Enter New Product:")
             if new_product_input == "0":
-                product_edit_menu()
+                break
             elif new_product_input == "":
                 message("INPUT BLANK NO ITEM ADDED",1.5)
                 continue
@@ -106,7 +105,7 @@ def add_new_item():
                         print("Please Enter A Numerical Value")
                         continue
                 if new_price_input == 0:
-                    product_edit_menu()
+                    break
                 else:
                     new_item.update({"Product":new_product_input,"Price":new_price_input})
                     try:
@@ -125,37 +124,38 @@ def add_new_item():
 
 #Prints item DB and takes user selection and overwrites the item DB
 def edit_current_item():
-    clear_screen()
-    print("Edit Item\n`````````")
-    product_list = open_item_db()
-    for product in product_list:
-        print(product_list.index(product)+1,":",product.get("Product")," / ",product.get("Price"))
-    print("0:Back") 
-    try:
-        editable = int(input("Select Product To Edit:"))
-        if editable == 0:
-            product_edit_menu()
-        else:
-            replacement = input("Replace With:")
-            while True:
-                    try:
-                        new_price_input = float(input("Price:"))
-                        if new_price_input < 0:
-                            print("Please Enter A Positive Numerical Value")
+    while True:
+        clear_screen()
+        print("Edit Item\n`````````")
+        product_list = open_item_db()
+        for product in product_list:
+            print(product_list.index(product)+1,":",product.get("Product")," / ",product.get("Price"))
+        print("0:Back") 
+        try:
+            editable = int(input("Select Product To Edit:"))
+            if editable == 0:
+                break
+            else:
+                replacement = input("Replace With:")
+                while True:
+                        try:
+                            new_price_input = float(input("Price:"))
+                            if new_price_input < 0:
+                                print("Please Enter A Positive Numerical Value")
+                                continue
+                            else:
+                                break
+                        except:
+                            print("Please Enter A Numerical Value")
                             continue
-                        else:
-                            break
-                    except:
-                        print("Please Enter A Numerical Value")
-                        continue
-            replaced_item = product_list[(editable-1)].get("Product")
-        product_list[(editable-1)].update({"Product":replacement,"Price":new_price_input})
-        message(f"PRODUCT: {replaced_item}\nREPLACED WITH: {replacement}",2)
-        save_item_db(product_list)
-        product_edit_menu()
-    except Exception as error:
-        print(f"INVALID OPTION\n{error}")
-        product_edit_menu()
+                replaced_item = product_list[(editable-1)].get("Product")
+            product_list[(editable-1)].update({"Product":replacement,"Price":new_price_input})
+            message(f"PRODUCT: {replaced_item}\nREPLACED WITH: {replacement}",2)
+            save_item_db(product_list)
+            break
+        except Exception as error:
+            print(f"INVALID OPTION\n{error}")
+            continue
 
 #Prints item DB,takes user selection for deletion and confirms before removing the item and overwriting the DB
 def delete_item():
@@ -169,7 +169,7 @@ def delete_item():
         try:
             deletable_item = int(input("Select Product To Delete:"))
             if deletable_item == 0:
-                product_edit_menu()
+                break
             else:
                 deleted_item = product_list[(deletable_item)-1].get("Product")
                 product_list.pop(deletable_item - 1)
@@ -179,8 +179,8 @@ def delete_item():
         except Exception as error:
                 message(f"INVALID OPTION\n{error}",2)
                 continue
-
-
+#Prints items and takes user selection displaying selection made and total
+#outputs a tuple (list[dict{"Product":product-name,"Price":price}],total)
 def select_items():
     new_order = []
     while True:
@@ -206,7 +206,7 @@ def select_items():
             user_selection = input("Add An Item:")
             if user_selection == "0":
                 message("ORDER CANCELLED",1.5)
-                order_menu()
+                break
             elif user_selection.lower() == "confirm":
                 return new_order,total
             elif int(user_selection) in range(1,len(item_db)+1):
@@ -221,33 +221,34 @@ def select_items():
             message(f"ERROR{error}",3)
             continue
 
-
+#takes user input and creates a new order then saves to DB
 def create_order():
-    clear_screen()
-    print(r"CREATE NEW ORDER""\n````````````````")
-    try:
-        cx_name = input("Customer Name:")
-        cx_adress = input("Customer Adress:")
-        cx_phone = input("Customer Phone:")
-        courier = select_courier()
-        new_order = select_items()
-        status = "Preparing"
-        new_order_dict = {"Customer Name":cx_name,"Customer Adress":cx_adress,
-        "Customer Phone":cx_phone,"Courier":courier,"Order":new_order[0],"Order Total":new_order[1],"Order Status":status}
-        order_db = compile_orders()
-        order_db.append(new_order_dict)
-        save_orders(order_db)
-        message("NEW ORDER CREATED",1.5)
-        order_menu()
-    except ValueError:
-        new_db = []
-        new_db.append(new_order_dict)
-        save_orders(new_db)
-        message("No Orders Found New File Created",2)
-    except Exception as error_message:
-        message(f"ERROR:{error_message}",5)  
+    while True:
+        clear_screen()
+        print(r"CREATE NEW ORDER""\n````````````````")
+        try:
+            cx_name = input("Customer Name:")
+            cx_adress = input("Customer Adress:")
+            cx_phone = input("Customer Phone:")
+            courier = select_courier()
+            new_order = select_items()
+            status = "Preparing"
+            new_order_dict = {"Customer Name":cx_name,"Customer Adress":cx_adress,
+            "Customer Phone":cx_phone,"Courier":courier,"Order":new_order[0],"Order Total":new_order[1],"Order Status":status}
+            order_db = compile_orders()
+            order_db.append(new_order_dict)
+            save_orders(order_db)
+            message("NEW ORDER CREATED",1.5)
+            break
+        except ValueError:
+            new_db = []
+            new_db.append(new_order_dict)
+            save_orders(new_db)
+            message("No Orders Found New File Created",2)
+        except Exception as error_message:
+            message(f"ERROR:{error_message}",5)  
 
-
+#prints courier DB and asks for user selection then outputs selection
 def select_courier():
     while True:
         clear_screen()
@@ -265,15 +266,16 @@ def select_courier():
                 continue
         except Exception as error:
             message(f"ERROR:\n{error}",4)
-            order_menu()
+            break
 
-
+#takes input as an argument then overwrites DB with input
 def save_orders(input):
         with open("orders.json","w") as orders_db:
             input_data = json.dumps(input)
             orders_db.write(input_data)
 
-
+#prints orders and asks for user selection to select order and user input for new status
+#then overwrites db with new status
 def update_order_status():
     update_order_status_title = r"UPDATE ORDER STATUS""\n```````````````````"
     clear_screen()
@@ -300,19 +302,19 @@ def update_order_status():
         try:
             user_selection = int(input("Select Order:"))
             if user_selection == 0:
-                order_menu()
+                break
             else:
                 order = orders[user_selection - 1]              
                 new_status = input("Enter New Status:")
                 order.update({"Order Status":new_status})
                 save_orders(orders)
                 message("STATUS UPDATED",1.5)
-                order_menu()
+                break
         except Exception as error:
             print("INVALID SELECTION):",error)
             continue
-
-
+#prints orders and takes user selection for orders then takes selection for item to edit
+#then updates the order and saves to db
 def edit_orders():
     while True:
         clear_screen()
@@ -337,7 +339,7 @@ def edit_orders():
             user_selection = int(input("Select Order:"))
             index = 1
             if user_selection == 0:
-                order_menu()
+                break
             else:
                 clear_screen()
                 order = orders[user_selection-1]
@@ -362,7 +364,9 @@ def edit_orders():
                     new_info = select_courier()
                 elif item_selection == 5:
                     category = "Order"
-                    new_info = select_items()
+                    order_tup = select_items()
+                    new_info = order_tup[0]
+                    order["Order Total"] = order_tup[1]
                 elif item_selection == 5:
                     category = "Order Status"
                     new_info = input("Replace Status With:")
@@ -379,7 +383,7 @@ def edit_orders():
                 time.sleep(1)
                 continue
 
-
+#prints orders takes user selection then asks for confirmation before deleting and saving to db
 def delete_orders():
     while True:
         os.system("cls")
@@ -404,7 +408,7 @@ def delete_orders():
         try:
             user_selection = int(input("Select Order To Delete:"))
             if user_selection == 0:
-               order_menu()       
+               break       
             else:
                 confirmation = input("Are You Sure? y/n:")
                 if confirmation.lower() == "n":
@@ -413,7 +417,7 @@ def delete_orders():
                     orders.pop(user_selection - 1)
                     save_orders(orders)
                     message("ORDER DELETED",1.5)
-                    order_menu()
+                    break
                 else:
                     print("Select Yes Or No")
         except Exception as error:
@@ -421,7 +425,7 @@ def delete_orders():
                 time.sleep(1)
                 continue
 
-
+#MAIN MENU
 def main_menu():
     main_menu_title ="MAIN MENU\n`````````"
     main_menu_list = ["Products","Orders","Couriers"]
@@ -449,7 +453,7 @@ def main_menu():
             message(f"INVALID SELECTION{error}",1.5)
             continue
 
-
+#PRODUCT MENU
 def product_menu():
     product_menu_title = "PRODUCT MENU\n````````````"
     product_menu_list = ["Show Products","Edit Products"]
@@ -462,7 +466,7 @@ def product_menu():
         try:
             user_selection = int(input("Select Option:"))
             if user_selection == 0:
-                    main_menu()
+                    break
             elif user_selection == 1:
                     products_list() 
             elif user_selection == 2:
@@ -471,7 +475,7 @@ def product_menu():
             message(f"INVALID SELECTION\n{error}",1.5)
             continue
 
-
+#prints products from db and takes user input for back
 def products_list():
     product_list_title = "PRODUCT LIST\n````````````"
     while True:
@@ -484,14 +488,14 @@ def products_list():
         try:
             user_selection = int(input("Select Option:"))
             if user_selection == 0:
-                product_menu()
+                break
             else:
                 continue
         except Exception as error:
             message(f"INVALID SELECTION\n{error}",1.5)
             continue
 
-
+#PRODUCT EDIT MENU
 def product_edit_menu():
     edit_menu_greeting = "EDIT MENU\n`````````"
     edit_menu_list = ["Create New","Edit","Delete"]
@@ -504,7 +508,7 @@ def product_edit_menu():
         try:
             user_selection = int(input("Select Option:"))
             if user_selection == 0:
-                product_menu()
+                break
             elif user_selection == 1:
                 add_new_item()
             elif user_selection == 2:
@@ -517,7 +521,7 @@ def product_edit_menu():
             message(f"INVALID SELECTION\n{error}",1.5)
             continue
 
-
+#ORDER MENU
 def order_menu():
     order_menu_list = ["Show Orders","Create Order","Edit Order Status","Edit Order","Delete Order"]
     order_menu_title = "ORDERS MENU\n```````````"
@@ -530,7 +534,7 @@ def order_menu():
         try:
             user_selection = int(input("Select Option:"))
             if user_selection == 0:
-                main_menu()
+                break
             elif user_selection == 1:
                 print_orders()                
             elif user_selection == 2:
@@ -545,7 +549,7 @@ def order_menu():
             message(f"INVALID SELECTION{error}",1.5)
             continue
 
-
+#COURIER MENU
 def courier_menu():
     courier_menu_list = ["Show Couriers","Create New Courier","Edit Couriers","Delete Couriers"]
     courier_menu_title = "COURIER MENU\n````````````"
@@ -558,7 +562,7 @@ def courier_menu():
         try:
             user_selection = int(input("Select Option:"))
             if user_selection == 0:
-                main_menu()
+                break
             elif user_selection == 1:
                 print_couriers()               
             elif user_selection == 2:
@@ -571,20 +575,20 @@ def courier_menu():
             message(f"INVALID SELECTION{error}",3)
             continue
 
-
+#Loads courier db and outputs contents
 def open_courier_db():
     with open("couriers.json","r") as couriers_db:
         input_data = couriers_db.read()
         output_data = json.loads(input_data)
         return(output_data)
 
-
+#Takes input as an argument and overwrites db with input
 def save_courier_db(input):
     with open("couriers.json","w") as courier_db:
         input_data = json.dumps(input)
         courier_db.write(input_data)
 
-
+#Prints couriers and takes user selection to go back
 def print_couriers():
     try:
         title = "COURIERS\n````````"
@@ -597,31 +601,33 @@ def print_couriers():
             print("0:Back")
             user_selection = input("Select Option:")
             if user_selection == "0":
-                courier_menu()
+                break
             else:
                 message("INVALID SELECTION",1.5)
     except Exception as error:
         message("ERROR:\n"+error,4)
 
-
+#takes user input and saves data to courier db creating a new courier
 def create_courier():
-    title = r"CREATE NEW COURIER""\n""``````````````````"
-    clear_screen()
-    print(title)
-    new_courier = input("New Courier Name:")
-    new_courier_number = input("Courier Number:")
-    if new_courier == "":
-        message("NO CHANGES MADE",1.5)
-        courier_menu()
-    else:
-        new_entry = {}
-        new_entry.update({"Courier Name":new_courier})
-        new_entry.update({"Courier Number":new_courier_number})
-        couriers = open_courier_db()
-        couriers.append(new_entry)
-        save_courier_db(couriers)
+    while True:
+        title = r"CREATE NEW COURIER""\n""``````````````````"
+        clear_screen()
+        print(title)
+        new_courier = input("New Courier Name:")
+        new_courier_number = input("Courier Number:")
+        if new_courier == "":
+            message("NO CHANGES MADE",1.5)
+            break
+        else:
+            new_entry = {}
+            new_entry.update({"Courier Name":new_courier})
+            new_entry.update({"Courier Number":new_courier_number})
+            couriers = open_courier_db()
+            couriers.append(new_entry)
+            save_courier_db(couriers)
+            break
 
-
+#prints courier and takes user selection and input then overwrites the db with new entry
 def update_courier():
     title = r"EDIT COURIER""\n""````````````"
     while True:
@@ -634,7 +640,7 @@ def update_courier():
         try:
             user_selection = int(input("Select Courier:"))
             if user_selection == 0:
-                courier_menu()
+                break
             else:
                 print(couriers[user_selection-1].get("Courier Name")," << Selected")
                 new_name = input("New Name: ")
@@ -660,8 +666,8 @@ def update_courier():
                     continue
         except Exception as error:
             message(f"INVALID SELECTION\n{error}",3) 
-
-        
+#prints courier from db then asks for user selection and confirmation 
+#before deleting the courier form the db       
 def delete_courier():
     title = r"DELETE COURIER""\n""``````````````"
     while True:
@@ -674,7 +680,7 @@ def delete_courier():
         try:
             user_selection = int(input("Select Courier:"))
             if user_selection == 0:
-                courier_menu()
+                break
             else:
                 print(couriers[user_selection-1]," << Selected")
                 confirmation = input(f"Delete {couriers[user_selection-1]}? Y or N: ")
@@ -690,8 +696,8 @@ def delete_courier():
         except Exception as error:
             message(f"INVALID SELECTION\n{error}",3) 
 
-
+#GREETING
 fancy_message("Welcome To The Shop Programme",1)
 
-
+#Start of program
 main_menu()
