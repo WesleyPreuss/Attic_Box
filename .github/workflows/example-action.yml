@@ -8,20 +8,20 @@ on:
       - main
 
 jobs:
-install_requirements:
-  name : Installs Reqs
-  steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
-        cache: 'pip' # caching pip dependencies
-    - run: pip install pygount
-  list-repo-files:
-    name: List files in repository
-    runs-on: ubuntu-latest
+  install_requirements:
+    name : Installs Reqs
     steps:
-      - name: checkout-repo
-        uses: actions/checkout@v2
-      - name: list-dir
-        run: ls -laR # Recursively list directory contents
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip' # caching pip dependencies
+      - run: pip install pygount
+    list-repo-files:
+      name: List files in repository
+      runs-on: ubuntu-latest
+      steps:
+        - name: checkout-repo
+          uses: actions/checkout@v2
+        - name: list-dir
+          run: ls -laR # Recursively list directory contents
