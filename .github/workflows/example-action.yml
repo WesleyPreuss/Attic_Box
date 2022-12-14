@@ -1,6 +1,11 @@
+
+
 name: list-repo
 
-on: push
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   list-repo-files:
@@ -11,3 +16,7 @@ jobs:
         uses: actions/checkout@v2
       - name: list-dir
         run: ls -laR # Recursively list directory contents
+        with:
+            python-version: '3.9'
+            cache: 'pip' # caching pip dependencies 
+        run: pip install pygount
